@@ -579,39 +579,99 @@
             });
             
             generateBtn.addEventListener('click', function() {
-                const mainSubject = document.getElementById('mainSubject').value || '[main subject]';
-                const mainAction = document.getElementById('mainAction').value || '[main action]';
-                const detailedSetting = document.getElementById('detailedSetting').value || '[detailed setting]';
-                const specificLighting = document.getElementById('specificLighting').value || '[specific lighting]';
-                const cameraTechnique = document.getElementById('cameraTechnique').value || '[camera technique]';
+                // Get all the form values
+                const fieldValues = {
+                    mainSubject: document.getElementById('mainSubject').value.trim(),
+                    mainAction: document.getElementById('mainAction').value.trim(),
+                    detailedSetting: document.getElementById('detailedSetting').value.trim(),
+                    specificLighting: document.getElementById('specificLighting').value.trim(),
+                    cameraTechnique: document.getElementById('cameraTechnique').value.trim(),
+                    
+                    perspective: document.getElementById('perspective').value.trim(),
+                    framingTechnique: document.getElementById('framingTechnique').value.trim(),
+                    compositionalPrinciple: document.getElementById('compositionalPrinciple').value.trim(),
+                    cameraMovement: document.getElementById('cameraMovement').value.trim(),
+                    cameraAngle: document.getElementById('cameraAngle').value.trim(),
+                    
+                    motionDetails: document.getElementById('motionDetails').value.trim(),
+                    weather: document.getElementById('weather').value.trim(),
+                    emotionalTone: document.getElementById('emotionalTone').value.trim(),
+                    extraElements: document.getElementById('extraElements').value.trim(),
+                    visualFocus: document.getElementById('visualFocus').value.trim(),
+                    
+                    eventA: document.getElementById('eventA').value.trim(),
+                    eventB: document.getElementById('eventB').value.trim(),
+                    transitionType: document.getElementById('transitionType').value.trim(),
+                    mood: document.getElementById('mood').value.trim(),
+                    inspiration: document.getElementById('inspiration').value.trim()
+                };
                 
-                const perspective = document.getElementById('perspective').value || '[perspective]';
-                const framingTechnique = document.getElementById('framingTechnique').value || '[framing technique]';
-                const compositionalPrinciple = document.getElementById('compositionalPrinciple').value || '[compositional principle]';
-                const cameraMovement = document.getElementById('cameraMovement').value || '[camera movement]';
-                const cameraAngle = document.getElementById('cameraAngle').value || '[specific camera angle or perspective shift]';
+                // Start with the base prompt
+                let promptParts = ["A cinematic 10-second video in ultra-realistic style."];
                 
-                const motionDetails = document.getElementById('motionDetails').value || '[motion details]';
-                const weather = document.getElementById('weather').value || '[weather or atmospheric conditions]';
-                const emotionalTone = document.getElementById('emotionalTone').value || '[emotional or thematic tone]';
-                const extraElements = document.getElementById('extraElements').value || '[extra elements or characters]';
-                const visualFocus = document.getElementById('visualFocus').value || '[key visual detail]';
+                // Add core elements if they exist
+                const coreElements = [];
+                if (fieldValues.mainSubject) coreElements.push(`${fieldValues.mainSubject} performing ${fieldValues.mainAction || "an action"}`);
+                if (fieldValues.detailedSetting) coreElements.push(`in ${fieldValues.detailedSetting}`);
+                if (fieldValues.specificLighting) coreElements.push(`with ${fieldValues.specificLighting}`);
+                if (fieldValues.cameraTechnique) coreElements.push(`and captured using ${fieldValues.cameraTechnique}`);
                 
-                const eventA = document.getElementById('eventA').value || '[event A]';
-                const eventB = document.getElementById('eventB').value || '[event B]';
-                const transitionType = document.getElementById('transitionType').value || '[transition type]';
-                const mood = document.getElementById('mood').value || '[mood or texture]';
-                const inspiration = document.getElementById('inspiration').value || '[art style, film reference, or time period]';
+                if (coreElements.length > 0) {
+                    promptParts.push(`The video shows ${coreElements.join(" ")}.`);
+                }
                 
-                const prompt = `A cinematic 10-second video in ultra-realistic style. The video shows ${mainSubject} performing ${mainAction} in ${detailedSetting}, with ${specificLighting} and captured using ${cameraTechnique}.
-
-The scene is filmed from ${perspective} viewpoint with ${framingTechnique} and follows ${compositionalPrinciple} for visual impact. The camera moves with ${cameraMovement} and includes ${cameraAngle} to enhance storytelling.
-
-The scene includes ${motionDetails}, ${weather}, and conveys a ${emotionalTone}. In the background, there are ${extraElements}, and the visual focus is on ${visualFocus}. The scene transitions smoothly from ${eventA} to ${eventB}, using a ${transitionType}.
-
-The environment feels ${mood}, inspired by ${inspiration}. The video contains no text or watermarks, and features high fidelity, film-like depth of field, and dramatic color grading.`;
+                // Add viewpoint & composition elements if they exist
+                const viewpointElements = [];
+                if (fieldValues.perspective) viewpointElements.push(`${fieldValues.perspective} viewpoint`);
+                if (fieldValues.framingTechnique) viewpointElements.push(`${fieldValues.framingTechnique}`);
+                if (fieldValues.compositionalPrinciple) viewpointElements.push(`follows ${fieldValues.compositionalPrinciple} for visual impact`);
+                if (fieldValues.cameraMovement) viewpointElements.push(`camera moves with ${fieldValues.cameraMovement}`);
+                if (fieldValues.cameraAngle) viewpointElements.push(`includes ${fieldValues.cameraAngle} to enhance storytelling`);
                 
-                generatedPrompt.textContent = prompt;
+                if (viewpointElements.length > 0) {
+                    promptParts.push(`The scene is filmed from ${viewpointElements.join(" and ")}.`);
+                }
+                
+                // Add enrichment elements if they exist
+                const enrichmentElements = [];
+                if (fieldValues.motionDetails) enrichmentElements.push(fieldValues.motionDetails);
+                if (fieldValues.weather) enrichmentElements.push(fieldValues.weather);
+                if (fieldValues.emotionalTone) enrichmentElements.push(`conveys a ${fieldValues.emotionalTone}`);
+                
+                if (enrichmentElements.length > 0) {
+                    promptParts.push(`The scene includes ${enrichmentElements.join(", ")}.`);
+                }
+                
+                // Add background and focus if they exist
+                if (fieldValues.extraElements) {
+                    promptParts.push(`In the background, there are ${fieldValues.extraElements}.`);
+                }
+                
+                if (fieldValues.visualFocus) {
+                    promptParts.push(`The visual focus is on ${fieldValues.visualFocus}.`);
+                }
+                
+                // Add transition if all elements exist
+                if (fieldValues.eventA && fieldValues.eventB && fieldValues.transitionType) {
+                    promptParts.push(`The scene transitions smoothly from ${fieldValues.eventA} to ${fieldValues.eventB}, using a ${fieldValues.transitionType}.`);
+                }
+                
+                // Add mood and inspiration if they exist
+                const styleElements = [];
+                if (fieldValues.mood) styleElements.push(`feels ${fieldValues.mood}`);
+                if (fieldValues.inspiration) styleElements.push(`inspired by ${fieldValues.inspiration}`);
+                
+                if (styleElements.length > 0) {
+                    promptParts.push(`The environment ${styleElements.join(", ")}.`);
+                }
+                
+                // Add standard closing for all prompts
+                promptParts.push("The video contains no text or watermarks, and features high fidelity, film-like depth of field, and dramatic color grading.");
+                
+                // Join all parts with proper spacing
+                const finalPrompt = promptParts.join("\n\n");
+                
+                generatedPrompt.textContent = finalPrompt;
                 resultSection.style.display = 'block';
                 
                 // Scroll to result
@@ -619,23 +679,4 @@ The environment feels ${mood}, inspired by ${inspiration}. The video contains no
             });
             
             copyBtn.addEventListener('click', function() {
-                const textToCopy = generatedPrompt.textContent;
-                navigator.clipboard.writeText(textToCopy).then(function() {
-                    // Show success message
-                    copySuccess.classList.add('show');
-                    setTimeout(function() {
-                        copySuccess.classList.remove('show');
-                    }, 2000);
-                }, function() {
-                    alert('Failed to copy text. Please try again.');
-                });
-            });
-            
-            // Reset result section on form reset
-            form.addEventListener('reset', function() {
-                resultSection.style.display = 'none';
-            });
-        });
-    </script>
-</body>
-</html>
+                const textToCopy = generatedPrompt.textContent
