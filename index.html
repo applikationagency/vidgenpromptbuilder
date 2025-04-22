@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sora Prompt Builder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #4cc9f0;
+            --text: #2b2d42;
+            --text-light: #8d99ae;
+            --background: #f8f9fa;
+            --white: #ffffff;
+            --success: #4ade80;
+            --border: #e9ecef;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 8px 30px var(--shadow);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        h1 {
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-weight: 400;
+            opacity: 0.9;
+        }
+        
+        main {
+            padding: 2rem;
+        }
+        
+        .form-section {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1.5rem;
+        }
+        
+        .form-section:last-child {
+            border-bottom: none;
+        }
+        
+        h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .input-help {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            color: var(--text);
+            transition: all 0.2s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .suggestion-box {
+            background-color: rgba(67, 97, 238, 0.05);
+            border: 1px solid rgba(67, 97, 238, 0.2);
+            border-radius: 6px;
+            padding: 0.75rem;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+        
+        .suggestion-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--primary);
+            font-size: 0.8rem;
+        }
+        
+        .suggestion-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.25rem;
+        }
+        
+        .suggestion-chip {
+            display: inline-block;
+            background-color: rgba(67, 97, 238, 0.1);
+            border-radius: 20px;
+            padding: 0.25rem 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+        }
+        
+        .suggestion-chip:hover {
+            background-color: rgba(67, 97, 238, 0.2);
+        }
+        
+        .result-section {
+            background-color: var(--background);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        
+        .result-text {
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            margin-bottom: 1rem;
+            white-space: pre-wrap;
+            font-size: 0.95rem;
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0 1rem;
+        }
+        
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-secondary {
+            background-color: var(--white);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--background);
+        }
+        
+        .copy-success {
+            display: inline-block;
+            background-color: var(--success);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            margin-left: 1rem;
+            font-size: 0.9rem;
+            transition: opacity 0.3s;
+            opacity: 0;
+        }
+        
+        .show {
+            opacity: 1;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border);
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            body {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Ultimate Sora Prompt Builder</h1>
+            <p class="subtitle">Create detailed AI video generation prompts</p>
+        </header>
+        
+        <main>
+            <form id="promptBuilder">
+                <div class="form-section">
+                    <h2>Core Elements</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="mainSubject">Main Subject</label>
+                            <input type="text" id="mainSubject" placeholder="e.g., a weathered lighthouse keeper">
+                            <p class="input-help">Who or what is the main focus of your video?</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="mainAction">Main Action</label>
+                            <input type="text" id="mainAction" placeholder="e.g., performing his daily routine">
+                            <p class="input-help">What is the main action being performed?</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="detailedSetting">Detailed Setting</label>
+                            <textarea id="detailedSetting" placeholder="e.g., a remote lighthouse perched on jagged rocks during sunset"></textarea>
+                            <p class="input-help">Describe the location in detail</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="specificLighting">Specific Lighting</label>
+                            <input type="text" id="specificLighting" placeholder="e.g., golden hour lighting streaming through windows">
+                            <p class="input-help">Describe the lighting conditions</p>
+                            <div class="suggestion-box">
+                                <div class="suggestion-title">Lighting Suggestions:</div>
+                                <div class="suggestion-list">
+                                    <span class="suggestion-chip" data-target="specificLighting">golden hour</span>
+                                    <span class="suggestion-chip" data-target="specificLighting">natural sunlight</span>
+                                    <span class="suggestion-chip" data-target="specificLighting">dramatic shadows</span>
+                                    <span class="suggestion-chip" data-target="specificLighting">neon glow</span>
+                                    <span class="suggestion-chip" data-target="specificLighting">soft diffused</span>
+                                    <span class="suggestion-chip" data-target="specificLighting">dramatic spotlight</span>
+                                    <span class="suggestion-chip" data-target="specificLighting">moonlight</span>
+                                    <span class="suggestion-chip" data-target="specificLighting">candlelight</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cameraTechnique">Camera Technique</label>
+                            <input type="text" id="cameraTechnique" placeholder="e.g., slow dolly zoom">
+                            <p class="input-help">How is the scene being captured?</p>
+                            <div class="suggestion-box">
+                                <div class="suggestion-title">Camera Technique Suggestions:</div>
+                                <div class="suggestion-list">
+                                    <span class="suggestion-chip" data-target="cameraTechnique">dolly zoom</span>
+                                    <span class="suggestion-chip" data-target="cameraTechnique">long take</span>
+                                    <span class="suggestion-chip" data-target="cameraTechnique">shallow depth of field</span>
+                                    <span class="suggestion-chip" data-target="cameraTechnique">wide angle lens</span>
+                                    <span class="suggestion-chip" data-target="cameraTechnique">telephoto lens</span>
+                                    <span class="suggestion-chip" data-target="cameraTechnique">handheld</span>
+                                    <span class="suggestion-chip" data-target="cameraTechnique">tracking shot</span>
+                                    <span class="suggestion-chip" data-target="cameraTechnique">time-lapse</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2>Viewpoint & Composition</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="perspective">Perspective</label>
+                            <select id="perspective">
+                                <option value="">Select a perspective...</option>
+                                <option value="first-person">First-person</option>
+                                <option value="third-person">Third-person</option>
+                                <option value="aerial">Aerial</option>
+                                <option value="bird's-eye">Bird's-eye</option>
+                                <option value="worm's-eye">Worm's-eye</option>
+                                <option value="over-the-shoulder">Over-the-shoulder</option>
+                            </select>
+                            <p class="input-help">From what viewpoint is the scene filmed?</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="framingTechnique">Framing Technique</label>
+                            <select id="framingTechnique">
+                                <option value="">Select framing...</option>
+                                <option value="wide shot">Wide Shot</option>
+                                <option value="medium shot">Medium Shot</option>
+                                <option value="close-up">Close-up</option>
+                                <option value="extreme close-up">Extreme Close-up</option>
+                                <option value="two shot">Two Shot</option>
+                                <option value="establishing shot">Establishing Shot</option>
+                            </select>
+                            <p class="input-help">How are subjects framed in the shot?</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="compositionalPrinciple">Compositional Principle</label>
+                            <select id="compositionalPrinciple">
+                                <option value="">Select composition...</option>
+                                <option value="rule of thirds">Rule of Thirds</option>
+                                <option value="leading lines">Leading Lines</option>
+                                <option value="symmetry">Symmetry</option>
+                                <option value="golden ratio">Golden Ratio</option>
+                                <option value="framing">Natural Framing</option>
+                                <option value="depth">Depth</option>
+                            </select>
+                            <p class="input-help">What visual principle guides the composition?</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cameraMovement">Camera Movement</label>
+                            <select id="cameraMovement">
+                                <option value="">Select movement...</option>
+                                <option value="static">Static</option>
+                                <option value="pan">Pan</option>
+                                <option value="tilt">Tilt</option>
+                                <option value="dolly">Dolly</option>
+                                <option value="track">Track</option>
+                                <option value="crane">Crane</option>
+                                <option value="handheld">Handheld</option>
+                                <option value="steadicam">Steadicam</option>
+                                <option value="drone">Drone</option>
+                            </select>
+                            <p class="input-help">How does the camera move?</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cameraAngle">Camera Angle or Perspective Shift</label>
+                            <input type="text" id="cameraAngle" placeholder="e.g., shifting from low angle to eye level">
+                            <p class="input-help">Any specific angles or perspective changes?</p>
+                            <div class="suggestion-box">
+                                <div class="suggestion-title">Camera Angle Suggestions:</div>
+                                <div class="suggestion-list">
+                                    <span class="suggestion-chip" data-target="cameraAngle">low angle to high angle</span>
+                                    <span class="suggestion-chip" data-target="cameraAngle">extreme close-up to wide shot</span>
+                                    <span class="suggestion-chip" data-target="cameraAngle">Dutch angle</span>
+                                    <span class="suggestion-chip" data-target="cameraAngle">eye level to bird's eye</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2>Enrichment Elements</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="motionDetails">Motion Details</label>
+                            <input type="text" id="motionDetails" placeholder="e.g., careful movements as he climbs the spiral staircase">
+                            <p class="input-help">Describe specific movements in the scene</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="weather">Weather/Atmospheric Conditions</label>
+                            <input type="text" id="weather" placeholder="e.g., stormy clouds gathering on the horizon">
+                            <p class="input-help">Describe weather or atmosphere</p>
+                            <div class="suggestion-box">
+                                <div class="suggestion-title">Weather Suggestions:</div>
+                                <div class="suggestion-list">
+                                    <span class="suggestion-chip" data-target="weather">light rain</span>
+                                    <span class="suggestion-chip" data-target="weather">dense fog</span>
+                                    <span class="suggestion-chip" data-target="weather">snow flurries</span>
+                                    <span class="suggestion-chip" data-target="weather">hazy sunshine</span>
+                                    <span class="suggestion-chip" data-target="weather">gathering storm clouds</span>
+                                    <span class="suggestion-chip" data-target="weather">gentle breeze</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="emotionalTone">Emotional or Thematic Tone</label>
+                            <input type="text" id="emotionalTone" placeholder="e.g., sense of solitary dedication">
+                            <p class="input-help">What emotion or theme is conveyed?</p>
+                            <div class="suggestion-box">
+                                <div class="suggestion-title">Emotional Tone Suggestions:</div>
+                                <div class="suggestion-list">
+                                    <span class="suggestion-chip" data-target="emotionalTone">melancholic</span>
+                                    <span class="suggestion-chip" data-target="emotionalTone">nostalgic</span>
+                                    <span class="suggestion-chip" data-target="emotionalTone">joyful anticipation</span>
+                                    <span class="suggestion-chip" data-target="emotionalTone">growing tension</span>
+                                    <span class="suggestion-chip" data-target="emotionalTone">serene contemplation</span>
+                                    <span class="suggestion-chip" data-target="emotionalTone">hopeful determination</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="extraElements">Extra Elements or Characters</label>
+                            <input type="text" id="extraElements" placeholder="e.g., seagulls circling and waves crashing">
+                            <p class="input-help">What's in the background or periphery?</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="visualFocus">Key Visual Detail</label>
+                            <input type="text" id="visualFocus" placeholder="e.g., weathered hands lighting the massive beacon">
+                            <p class="input-help">What specific visual detail should be emphasized?</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2>Transition & Style</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="eventA">Event A</label>
+                            <input type="text" id="eventA" placeholder="e.g., lighting of the lamp">
+                            <p class="input-help">First event in the transition</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="eventB">Event B</label>
+                            <input type="text" id="eventB" placeholder="e.g., beam cutting through darkness">
+                            <p class="input-help">Second event in the transition</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="transitionType">Transition Type</label>
+                            <select id="transitionType">
+                                <option value="">Select transition...</option>
+                                <option value="cut">Cut</option>
+                                <option value="fade">Fade</option>
+                                <option value="dissolve">Dissolve</option>
+                                <option value="wipe">Wipe</option>
+                                <option value="match cut">Match Cut</option>
+                                <option value="jump cut">Jump Cut</option>
+                                <option value="smash cut">Smash Cut</option>
+                                <option value="morphing">Morphing</option>
+                            </select>
+                            <p class="input-help">How does the scene transition?</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="mood">Mood or Texture</label>
+                            <input type="text" id="mood" placeholder="e.g., both harsh and majestic">
+                            <p class="input-help">How does the environment feel?</p>
+                            <div class="suggestion-box">
+                                <div class="suggestion-title">Mood Suggestions:</div>
+                                <div class="suggestion-list">
+                                    <span class="suggestion-chip" data-target="mood">ethereal</span>
+                                    <span class="suggestion-chip" data-target="mood">gritty</span>
+                                    <span class="suggestion-chip" data-target="mood">dreamlike</span>
+                                    <span class="suggestion-chip" data-target="mood">oppressive</span>
+                                    <span class="suggestion-chip" data-target="mood">vibrant</span>
+                                    <span class="suggestion-chip" data-target="mood">desolate</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="inspiration">Inspiration</label>
+                            <input type="text" id="inspiration" placeholder="e.g., cinematography of The Lighthouse (2019)">
+                            <p class="input-help">Art style, film reference, or time period</p>
+                            <div class="suggestion-box">
+                                <div class="suggestion-title">Inspiration Suggestions:</div>
+                                <div class="suggestion-list">
+                                    <span class="suggestion-chip" data-target="inspiration">Wes Anderson</span>
+                                    <span class="suggestion-chip" data-target="inspiration">film noir</span>
+                                    <span class="suggestion-chip" data-target="inspiration">1980s analog</span>
+                                    <span class="suggestion-chip" data-target="inspiration">Studio Ghibli</span>
+                                    <span class="suggestion-chip" data-target="inspiration">cyberpunk aesthetic</span>
+                                    <span class="suggestion-chip" data-target="inspiration">Golden Age of Hollywood</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button type="button" id="generateBtn" class="btn-primary">Generate Prompt</button>
+                    <button type="reset" class="btn-secondary">Reset Form</button>
+                </div>
+                
+                <div class="result-section" style="display: none;" id="resultSection">
+                    <h2>Your Generated Prompt</h2>
+                    <div class="result-text" id="generatedPrompt"></div>
+                    <div style="display: flex; align-items: center;">
+                        <button type="button" id="copyBtn" class="btn-secondary">Copy to Clipboard</button>
+                        <span class="copy-success" id="copySuccess">Copied!</span>
+                    </div>
+                </div>
+            </form>
+        </main>
+        
+        <footer>
+            <p>Ultimate Sora Prompt Builder | Use this template to create detailed AI video prompts</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const generateBtn = document.getElementById('generateBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const copySuccess = document.getElementById('copySuccess');
+            const resultSection = document.getElementById('resultSection');
+            const generatedPrompt = document.getElementById('generatedPrompt');
+            const form = document.getElementById('promptBuilder');
+            
+            // Add functionality to suggestion chips
+            const suggestionChips = document.querySelectorAll('.suggestion-chip');
+            suggestionChips.forEach(chip => {
+                chip.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const targetInput = document.getElementById(targetId);
+                    
+                    if (targetInput) {
+                        const chipText = this.textContent;
+                        
+                        // If there's already text, append with appropriate spacing
+                        if (targetInput.value.trim() !== '') {
+                            targetInput.value = targetInput.value + (targetInput.value.endsWith(',') ? ' ' : ', ') + chipText;
+                        } else {
+                            targetInput.value = chipText;
+                        }
+                        
+                        // Focus on the input after adding suggestion
+                        targetInput.focus();
+                    }
+                });
+            });
+            
+            generateBtn.addEventListener('click', function() {
+                const mainSubject = document.getElementById('mainSubject').value || '[main subject]';
+                const mainAction = document.getElementById('mainAction').value || '[main action]';
+                const detailedSetting = document.getElementById('detailedSetting').value || '[detailed setting]';
+                const specificLighting = document.getElementById('specificLighting').value || '[specific lighting]';
+                const cameraTechnique = document.getElementById('cameraTechnique').value || '[camera technique]';
+                
+                const perspective = document.getElementById('perspective').value || '[perspective]';
+                const framingTechnique = document.getElementById('framingTechnique').value || '[framing technique]';
+                const compositionalPrinciple = document.getElementById('compositionalPrinciple').value || '[compositional principle]';
+                const cameraMovement = document.getElementById('cameraMovement').value || '[camera movement]';
+                const cameraAngle = document.getElementById('cameraAngle').value || '[specific camera angle or perspective shift]';
+                
+                const motionDetails = document.getElementById('motionDetails').value || '[motion details]';
+                const weather = document.getElementById('weather').value || '[weather or atmospheric conditions]';
+                const emotionalTone = document.getElementById('emotionalTone').value || '[emotional or thematic tone]';
+                const extraElements = document.getElementById('extraElements').value || '[extra elements or characters]';
+                const visualFocus = document.getElementById('visualFocus').value || '[key visual detail]';
+                
+                const eventA = document.getElementById('eventA').value || '[event A]';
+                const eventB = document.getElementById('eventB').value || '[event B]';
+                const transitionType = document.getElementById('transitionType').value || '[transition type]';
+                const mood = document.getElementById('mood').value || '[mood or texture]';
+                const inspiration = document.getElementById('inspiration').value || '[art style, film reference, or time period]';
+                
+                const prompt = `A cinematic 10-second video in ultra-realistic style. The video shows ${mainSubject} performing ${mainAction} in ${detailedSetting}, with ${specificLighting} and captured using ${cameraTechnique}.
+
+The scene is filmed from ${perspective} viewpoint with ${framingTechnique} and follows ${compositionalPrinciple} for visual impact. The camera moves with ${cameraMovement} and includes ${cameraAngle} to enhance storytelling.
+
+The scene includes ${motionDetails}, ${weather}, and conveys a ${emotionalTone}. In the background, there are ${extraElements}, and the visual focus is on ${visualFocus}. The scene transitions smoothly from ${eventA} to ${eventB}, using a ${transitionType}.
+
+The environment feels ${mood}, inspired by ${inspiration}. The video contains no text or watermarks, and features high fidelity, film-like depth of field, and dramatic color grading.`;
+                
+                generatedPrompt.textContent = prompt;
+                resultSection.style.display = 'block';
+                
+                // Scroll to result
+                resultSection.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            copyBtn.addEventListener('click', function() {
+                const textToCopy = generatedPrompt.textContent;
+                navigator.clipboard.writeText(textToCopy).then(function() {
+                    // Show success message
+                    copySuccess.classList.add('show');
+                    setTimeout(function() {
+                        copySuccess.classList.remove('show');
+                    }, 2000);
+                }, function() {
+                    alert('Failed to copy text. Please try again.');
+                });
+            });
+            
+            // Reset result section on form reset
+            form.addEventListener('reset', function() {
+                resultSection.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
